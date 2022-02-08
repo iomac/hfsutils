@@ -49,25 +49,24 @@ hfsvol *curvol;				/* current volume */
  * NAME:	validvname()
  * DESCRIPTION:	return true if parameter is a valid volume name
  */
-static
-int validvname(const char *name)
+static int validvname(const char *name)
 {
-  int len;
+    size_t len;
+    
+    len = strlen(name);
+    if (len < 1)
+        ERROR(EINVAL, "volume name cannot be empty");
+    else if (len > HFS_MAX_VLEN)
+        ERROR(ENAMETOOLONG,
+              "volume name can be at most " STR(HFS_MAX_VLEN) " chars");
 
-  len = strlen(name);
-  if (len < 1)
-    ERROR(EINVAL, "volume name cannot be empty");
-  else if (len > HFS_MAX_VLEN)
-    ERROR(ENAMETOOLONG,
-	  "volume name can be at most " STR(HFS_MAX_VLEN) " chars");
+    if (strchr(name, ':'))
+        ERROR(EINVAL, "volume name may not contain colons");
 
-  if (strchr(name, ':'))
-    ERROR(EINVAL, "volume name may not contain colons");
-
-  return 1;
+    return 1;
 
 fail:
-  return 0;
+    return 0;
 }
 
 /*
@@ -659,7 +658,7 @@ hfsfile *hfs_create(hfsvol *vol, const char *path,
   char name[HFS_MAX_FLEN + 1];
   CatKeyRec key;
   byte record[HFS_MAX_CATRECLEN];
-  unsigned reclen;
+  size_t reclen;
   int found;
 
   if (getvol(&vol) == -1)
@@ -850,7 +849,7 @@ fail:
  * NAME:	hfs->write()
  * DESCRIPTION:	write to an open file
  */
-unsigned long hfs_write(hfsfile *file, const void *buf, unsigned long len)
+size_t hfs_write(hfsfile *file, const void *buf, size_t len)
 {
   unsigned long *lglen, *pylen, count;
   const byte *ptr = buf;
@@ -955,7 +954,7 @@ fail:
  * NAME:	hfs->seek()
  * DESCRIPTION:	change file seek pointer
  */
-unsigned long hfs_seek(hfsfile *file, long offset, int from)
+unsigned long hfs_seek(hfsfile *file, size_t offset, int from)
 {
   unsigned long *lglen, newpos;
 
@@ -1265,7 +1264,7 @@ int hfs_rename(hfsvol *vol, const char *srcpath, const char *dstpath)
   CatKeyRec key;
   char srcname[HFS_MAX_FLEN + 1], dstname[HFS_MAX_FLEN + 1];
   byte record[HFS_MAX_CATRECLEN];
-  unsigned int reclen;
+  size_t reclen;
   int found, isdir, moving;
   node n;
 
@@ -1549,7 +1548,7 @@ int compare(const unsigned int *n1, const unsigned int *n2)
  * DESCRIPTION:	write a new filesystem
  */
 int hfs_format(const char *path, int pnum, int mode, const char *vname,
-	       unsigned int nbadblocks, const unsigned long badblocks[])
+	       unsigned int nbadblocks, const unsigned int badblocks[])
 {
   hfsvol vol;
   btree *ext = &vol.ext;
@@ -1648,7 +1647,7 @@ int hfs_format(const char *path, int pnum, int mode, const char *vname,
 
       for (i = 0; i < nbadblocks; ++i)
 	{
-	  unsigned long bnum;
+	  unsigned int bnum;
 	  unsigned int anum;
 
 	  bnum = badblocks[i];
@@ -1755,7 +1754,7 @@ int hfs_format(const char *path, int pnum, int mode, const char *vname,
       ExtDataRec *extrec;
       ExtKeyRec key;
       byte record[HFS_MAX_EXTRECLEN];
-      unsigned int reclen;
+      size_t reclen;
 
       f_init(&bbfile, &vol, HFS_CNID_BADALLOC, "bad blocks");
 

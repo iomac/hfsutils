@@ -384,7 +384,7 @@ void d_fetchstr(const unsigned char **ptr, char *dest, unsigned size)
  */
 void d_storestr(unsigned char **ptr, const char *src, unsigned size)
 {
-  unsigned len;
+  size_t len;
 
   len = strlen(src);
   if (len > --size)
@@ -411,10 +411,11 @@ int d_relstring(const char *str1, const char *str2)
       diff = hfs_charorder[(unsigned char) *str1] -
 	     hfs_charorder[(unsigned char) *str2];
 
-      if (diff)
-	return diff;
+        if (diff)
+          return diff;
 
-      ++str1, ++str2;
+        ++str1;
+        ++str2;
     }
 
   if (! *str1 && *str2)

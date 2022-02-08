@@ -26,9 +26,12 @@ typedef signed short	Integer;
 typedef unsigned short	UInteger;
 typedef signed long	LongInt;
 typedef unsigned long	ULongInt;
+
+#ifndef TARGET_OS_MAC
 typedef char		Str15[16];
 typedef char		Str31[32];
 typedef long		OSType;
+#endif
 
 typedef struct {
   Integer	sbSig;		/* device signature (should be 0x4552) */
@@ -109,6 +112,7 @@ typedef struct {
   Str31		ckrCName;	/* catalog node name */
 } CatKeyRec;
 
+#ifndef TARGET_OS_MAC
 typedef struct {
   Integer	v;		/* vertical coordinate */
   Integer	h;		/* horizontal coordinate */
@@ -150,6 +154,7 @@ typedef struct {
   Integer	fdComment;	/* comment ID */
   LongInt	fdPutAway;	/* home directory ID */
 } FXInfo;
+#endif
 
 typedef struct {
   Integer	drSigWord;	/* volume signature (0x4244 for HFS) */

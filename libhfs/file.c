@@ -151,8 +151,8 @@ int f_doblock(hfsfile *file, unsigned long num, block *bp,
   unsigned int fabn;
   int i;
 
-  abnum = num / file->vol->lpa;
-  blnum = num % file->vol->lpa;
+  abnum = (unsigned int)num / file->vol->lpa;
+  blnum = (unsigned int)num % file->vol->lpa;
 
   /* locate the appropriate extent record */
 
@@ -204,7 +204,7 @@ int f_addextent(hfsfile *file, ExtDescriptor *blocks)
   hfsvol *vol = file->vol;
   ExtDataRec *extrec;
   unsigned long *pylen;
-  unsigned int start, end;
+  unsigned long start, end;
   node n;
   int i;
 
@@ -236,10 +236,10 @@ int f_addextent(hfsfile *file, ExtDescriptor *blocks)
       if (start == end)
 	break;
 
-      if (v_extsearch(file, start, &file->ext, &n) <= 0)
+      if (v_extsearch(file, (unsigned int)start, &file->ext, &n) <= 0)
 	goto fail;
 
-      file->fabn = start;
+      file->fabn = (unsigned int)start;
     }
 
   if (i >= 0 &&
@@ -255,7 +255,7 @@ int f_addextent(hfsfile *file, ExtDescriptor *blocks)
 	{
 	  ExtKeyRec key;
 	  byte record[HFS_MAX_EXTRECLEN];
-	  unsigned int reclen;
+	  unsigned long reclen;
 
 	  /* record is full; create a new one */
 
@@ -267,9 +267,9 @@ int f_addextent(hfsfile *file, ExtDescriptor *blocks)
 	      file->ext[i].xdrNumABlks = 0;
 	    }
 
-	  file->fabn = start;
+	  file->fabn = (unsigned int)start;
 
-	  r_makeextkey(&key, file->fork, file->cat.u.fil.filFlNum, end);
+	  r_makeextkey(&key, file->fork, file->cat.u.fil.filFlNum, (unsigned int)end);
 	  r_packextrec(&key, &file->ext, record, &reclen);
 
 	  if (bt_insert(&vol->ext, record, reclen) == -1)
@@ -351,7 +351,7 @@ int f_trunc(hfsfile *file)
   hfsvol *vol = file->vol;
   ExtDataRec *extrec;
   unsigned long *lglen, *pylen, alblksz, newpylen;
-  unsigned int dlen, start, end;
+  unsigned long dlen, start, end;
   node n;
   int i;
 
@@ -400,10 +400,10 @@ int f_trunc(hfsfile *file)
       if (start >= end)
 	break;
 
-      if (v_extsearch(file, start, &file->ext, &n) <= 0)
+      if (v_extsearch(file, (unsigned int)start, &file->ext, &n) <= 0)
 	goto fail;
 
-      file->fabn = start;
+      file->fabn = (unsigned int)start;
     }
 
   if (start > end)
@@ -471,10 +471,10 @@ int f_trunc(hfsfile *file)
 
       if (dlen)
 	{
-	  if (v_extsearch(file, start, &file->ext, &n) <= 0)
+	  if (v_extsearch(file, (unsigned int)start, &file->ext, &n) <= 0)
 	    goto fail;
 
-	  file->fabn = start;
+	  file->fabn = (unsigned int)start;
 	  i = -1;
 	}
     }

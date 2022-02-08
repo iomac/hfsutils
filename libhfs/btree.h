@@ -25,9 +25,9 @@ int bt_putnode(node *);
 int bt_readhdr(btree *);
 int bt_writehdr(btree *);
 
-int bt_space(btree *, unsigned int);
+int bt_space(btree *bt, size_t nrecs);
 
-int bt_insert(btree *, const byte *, unsigned int);
+int bt_insert(btree *bt, const byte *record, unsigned long reclen);
 int bt_delete(btree *, const byte *);
 
 int bt_search(btree *, const byte *, node *);

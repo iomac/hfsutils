@@ -212,7 +212,7 @@ int m_mkpart(hfsvol *vol,
 	     const char *name, const char *type, unsigned long len)
 {
   Partition map;
-  unsigned int nparts, maxparts;
+  long nparts, maxparts;
   unsigned long bnum, start, remain;
   int found;
 

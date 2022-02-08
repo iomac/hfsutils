@@ -26,9 +26,9 @@ int n_free(node *);
 
 int n_search(node *, const byte *);
 
-void n_index(const node *, byte *, unsigned int *);
+void n_index(const node *np, byte *record, size_t *reclen);
 
-void n_insertx(node *, const byte *, unsigned int);
-int n_insert(node *, byte *, unsigned int *);
+int n_insert(node *np, byte *record, size_t *reclen);
+void n_insertx(node *np, const byte *record, size_t reclen);
 
 int n_delete(node *, byte *, int *);

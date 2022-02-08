@@ -24,6 +24,7 @@
 # endif
 
 # include <string.h>
+#include <stdlib.h>
 
 # include "libhfs.h"
 # include "record.h"
@@ -33,7 +34,7 @@
  * NAME:	record->packcatkey()
  * DESCRIPTION:	pack a catalog record key
  */
-void r_packcatkey(const CatKeyRec *key, byte *pkey, unsigned int *len)
+void r_packcatkey(const CatKeyRec *key, byte *pkey, size_t *len)
 {
   const byte *start = pkey;
 
@@ -64,7 +65,7 @@ void r_unpackcatkey(const byte *pkey, CatKeyRec *key)
  * NAME:	record->packextkey()
  * DESCRIPTION:	pack an extents record key
  */
-void r_packextkey(const ExtKeyRec *key, byte *pkey, unsigned int *len)
+void r_packextkey(const ExtKeyRec *key, byte *pkey, size_t *len)
 {
   const byte *start = pkey;
 
@@ -93,9 +94,9 @@ void r_unpackextkey(const byte *pkey, ExtKeyRec *key)
  * NAME:	record->comparecatkeys()
  * DESCRIPTION:	compare two (packed) catalog record keys
  */
-int r_comparecatkeys(const CatKeyRec *key1, const CatKeyRec *key2)
+long r_comparecatkeys(const CatKeyRec *key1, const CatKeyRec *key2)
 {
-  int diff;
+  long diff;
 
   diff = key1->ckrParID - key2->ckrParID;
   if (diff)
@@ -108,9 +109,9 @@ int r_comparecatkeys(const CatKeyRec *key1, const CatKeyRec *key2)
  * NAME:	record->compareextkeys()
  * DESCRIPTION:	compare two (packed) extents record keys
  */
-int r_compareextkeys(const ExtKeyRec *key1, const ExtKeyRec *key2)
+long r_compareextkeys(const ExtKeyRec *key1, const ExtKeyRec *key2)
 {
-  int diff;
+  long diff;
 
   diff = key1->xkrFNum - key2->xkrFNum;
   if (diff)
@@ -128,7 +129,7 @@ int r_compareextkeys(const ExtKeyRec *key1, const ExtKeyRec *key2)
  * NAME:	record->packcatdata()
  * DESCRIPTION:	pack catalog record data
  */
-void r_packcatdata(const CatDataRec *data, byte *pdata, unsigned int *len)
+void r_packcatdata(const CatDataRec *data, byte *pdata, size_t *len)
 {
   const byte *start = pdata;
   int i;
@@ -368,7 +369,7 @@ void r_unpackcatdata(const byte *pdata, CatDataRec *data)
  * NAME:	record->packextdata()
  * DESCRIPTION:	pack extent record data
  */
-void r_packextdata(const ExtDataRec *data, byte *pdata, unsigned int *len)
+void r_packextdata(const ExtDataRec *data, byte *pdata, size_t *len)
 {
   const byte *start = pdata;
   int i;
@@ -404,9 +405,7 @@ void r_unpackextdata(const byte *pdata, ExtDataRec *data)
  */
 void r_makecatkey(CatKeyRec *key, unsigned long parid, const char *name)
 {
-  int len;
-
-  len = strlen(name) + 1;
+  size_t len = strlen(name) + 1;
 
   key->ckrKeyLen = 0x05 + len + (len & 1);
   key->ckrResrv1 = 0;
@@ -433,7 +432,7 @@ void r_makeextkey(ExtKeyRec *key,
  * DESCRIPTION:	create a packed catalog record
  */
 void r_packcatrec(const CatKeyRec *key, const CatDataRec *data,
-		  byte *precord, unsigned int *len)
+		  byte *precord, size_t *len)
 {
   r_packcatkey(key, precord, len);
   r_packcatdata(data, HFS_RECDATA(precord), len);
@@ -444,7 +443,7 @@ void r_packcatrec(const CatKeyRec *key, const CatDataRec *data,
  * DESCRIPTION:	create a packed extents record
  */
 void r_packextrec(const ExtKeyRec *key, const ExtDataRec *data,
-		  byte *precord, unsigned int *len)
+		  byte *precord, size_t *len)
 {
   r_packextkey(key, precord, len);
   r_packextdata(data, HFS_RECDATA(precord), len);

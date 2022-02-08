@@ -22,8 +22,6 @@
 # include "hfs.h"
 # include "apple.h"
 
-extern int errno;
-
 # define ERROR(code, str)  \
     do { hfs_error = (str), errno = (code); goto fail; } while (0)
 
@@ -185,13 +183,13 @@ typedef struct _btree_ {
 # define HFS_BT_UPDATE_HDR	0x01
 
 struct _hfsvol_ {
-  void *priv;		/* OS-dependent private descriptor data */
-  int flags;		/* bit flags */
+    void *priv;		/* OS-dependent private descriptor data */
+    int flags;		/* bit flags */
 
-  int pnum;		/* ordinal HFS partition number */
-  unsigned long vstart;	/* logical block offset to start of volume */
-  unsigned long vlen;	/* number of logical blocks in volume */
-  unsigned int lpa;	/* number of logical blocks per allocation block */
+    int pnum;		/* ordinal HFS partition number */
+    size_t vstart;	/* logical block offset to start of volume */
+    size_t vlen;	/* number of logical blocks in volume */
+    size_t lpa;	/* number of logical blocks per allocation block */
 
   bcache *cache;	/* cache of recently used blocks */
 

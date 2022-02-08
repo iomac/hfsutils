@@ -307,9 +307,9 @@ fail:
  * NAME:	btree->space()
  * DESCRIPTION:	assert space for new records, or extend the file
  */
-int bt_space(btree *bt, unsigned int nrecs)
+int bt_space(btree *bt, size_t nrecs)
 {
-  unsigned int nnodes;
+  size_t nnodes;
   long space;
 
   nnodes = nrecs * (bt->hdr.bthDepth + 1);
@@ -409,7 +409,7 @@ fail:
  * DESCRIPTION:	recursively locate a node and insert a record
  */
 static
-int insertx(node *np, byte *record, int *reclen)
+int insertx(node *np, byte *record, size_t *reclen)
 {
   node child;
   byte *rec;
@@ -464,7 +464,7 @@ fail:
  * NAME:	btree->insert()
  * DESCRIPTION:	insert a new node record into a tree
  */
-int bt_insert(btree *bt, const byte *record, unsigned int reclen)
+int bt_insert(btree *bt, const byte *record, unsigned long reclen)
 {
   node root;
   byte newrec[HFS_MAX_RECLEN];
@@ -496,7 +496,7 @@ int bt_insert(btree *bt, const byte *record, unsigned int reclen)
   if (reclen)
     {
       byte oroot[HFS_MAX_RECLEN];
-      unsigned int orootlen;
+      size_t orootlen;
 
       /* root node was split; create a new root */
 

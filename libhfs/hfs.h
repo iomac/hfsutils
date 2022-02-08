@@ -156,9 +156,9 @@ hfsfile *hfs_open(hfsvol *, const char *);
 int hfs_setfork(hfsfile *, int);
 int hfs_getfork(hfsfile *);
 unsigned long hfs_read(hfsfile *, void *, unsigned long);
-unsigned long hfs_write(hfsfile *, const void *, unsigned long);
+size_t hfs_write(hfsfile *file, const void *buf, size_t len);
 int hfs_truncate(hfsfile *, unsigned long);
-unsigned long hfs_seek(hfsfile *, long, int);
+unsigned long hfs_seek(hfsfile *file, size_t offset, int from);
 int hfs_close(hfsfile *);
 
 int hfs_stat(hfsvol *, const char *, hfsdirent *);
@@ -176,5 +176,5 @@ int hfs_zero(const char *, unsigned int, unsigned long *);
 int hfs_mkpart(const char *, unsigned long);
 int hfs_nparts(const char *);
 
-int hfs_format(const char *, int, int,
-	       const char *, unsigned int, const unsigned long []);
+int hfs_format(const char *path, int pnum, int mode,
+               const char *vname, unsigned int nbadblocks, const unsigned int badblocks[]);

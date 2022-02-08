@@ -223,7 +223,7 @@ int n_search(node *np, const byte *pkey)
  * NAME:	node->index()
  * DESCRIPTION:	create an index record from a key and node pointer
  */
-void n_index(const node *np, byte *record, unsigned int *reclen)
+void n_index(const node *np, byte *record, size_t *reclen)
 {
   const byte *key = HFS_NODEREC(*np, 0);
 
@@ -249,11 +249,11 @@ void n_index(const node *np, byte *record, unsigned int *reclen)
  * DESCRIPTION:	divide a node into two and insert a record
  */
 static
-int split(node *left, byte *record, unsigned int *reclen)
+int split(node *left, byte *record, size_t *reclen)
 {
   btree *bt = left->bt;
   node n, *right = &n, *side = 0;
-  int mark, i;
+  long mark, i;
 
   /* create a second node by cloning the first */
 
@@ -343,7 +343,7 @@ fail:
  * NAME:	node->insertx()
  * DESCRIPTION:	insert a record into a node (which must already have room)
  */
-void n_insertx(node *np, const byte *record, unsigned int reclen)
+void n_insertx(node *np, const byte *record, size_t reclen)
 {
   int rnum, i;
   byte *ptr;
@@ -370,7 +370,7 @@ void n_insertx(node *np, const byte *record, unsigned int reclen)
  * NAME:	node->insert()
  * DESCRIPTION:	insert a new record into a node; return a record for parent
  */
-int n_insert(node *np, byte *record, unsigned int *reclen)
+int n_insert(node *np, byte *record, size_t *reclen)
 {
   /* check for free space */
 
